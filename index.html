@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Australian Superannuation Growth Calculator</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    background: #f9fafb;
+    padding: 20px;
+    color: #333;
+  }
+  .container {
+    max-width: 900px;
+    margin: auto;
+    background: #fff;
+    padding: 20px 30px;
+    border-radius: 10px;
+    box-shadow: 0 0 8px rgba(0,0,0,0.1);
+  }
+  h1, h2 {
+    color: #2563EB;
+  }
+  label {
+    display: block;
+    margin-top: 12px;
+    font-weight: bold;
+    font-size: 14px;
+  }
+  input[type=number] {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 14px;
+  }
+  button {
+    background: #2563EB;
+    color: white;
+    padding: 12px 18px;
+    font-size: 16px;
+    border: none;
+    border-radius: 8px;
+    margin-top: 20px;
+    cursor: pointer;
+  }
+  button:hover {
+    background: #1e40af;
+  }
+  .result {
+    background: #f3f4f6;
+    padding: 15px;
+    margin-top: 20px;
+    border-radius: 8px;
+    font-size: 18px;
+    font-weight: bold;
+    color: #1e40af;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 18px;
+    font-size: 14px;
+  }
+  th, td {
+    border: 1px solid #ddd;
+    padding: 8px 10px;
+    text-align: right;
+  }
+  th {
+    background: #e0e7ff;
+    color: #1e40af;
+  }
+  td:first-child, th:first-child {
+    text-align: center;
+  }
+  .note {
+    font-size: 13px;
+    color: #555;
+    margin-top: 25px;
+    line-height: 1.4;
+  }
+  a {
+    color: #2563EB;
+  }
+</style>
+</head>
+<body>
+  <div class="container">
+    <h1>Australian Superannuation Growth Calculator</h1>
+    <p>Estimate how your superannuation savings could grow by the time you retire, using customizable assumptions like salary, employer contributions, returns, and fees.</p>
+
+    <h2>What is Superannuation?</h2>
+    <p>Superannuation (or \"super\") is a way of saving for retirement in Australia, where your employer contributes a percentage of your salary into a dedicated fund. Your savings grow over time with investment returns.</p>
+
+    <h2>How to use this calculator</h2>
+    <ul>
+      <li>Enter your current super balance and annual salary.</li>
+      <li>Adjust the employer contribution rate (Super Guarantee currently 11%).</li>
+      <li>Add any personal yearly contributions you plan to make.</li>
+      <li>Set your expected investment return and any fees your fund charges.</li>
+      <li>Input your current age and the age you plan to retire.</li>
+      <li>Click “Calculate” to see your projected balance at retirement.</li>
+    </ul>
+
+    <!-- Calculator Inputs -->
+    <label for="currentBalance">Current Super Balance (AUD)</label>
+    <input type="number" id="currentBalance" value="20000" min="0" />
+
+    <label for="annualSalary">Annual Salary (AUD)</label>
+    <input type="number" id="annualSalary" value="85000" min="0" />
+
+    <label for="employerPct">Employer Contribution (% of salary)</label>
+    <input type="number" id="employerPct" value="11" step="0.1" min="0" max="50" />
+
+    <label for="personalContribution">Annual Personal Contribution (AUD)</label>
+    <input type="number" id="personalContribution" value="0" min="0" />
+
+    <label for="annualReturn">Expected Annual Return (%)</label>
+    <input type="number" id="annualReturn" value="6" step="0.1" min="0" max="20" />
+
+    <label for="annualFee">Annual Fee (% of balance)</label>
+    <input type="number" id="annualFee" value="0.9" step="0.01" min="0" max="5" />
+
+    <label for="salaryGrowth">Salary Growth (%)</label>
+    <input type="number" id="salaryGrowth" value="2.5" step="0.1" min="0" max="10" />
+
+    <label for="currentAge">Current Age</label>
+    <input type="number" id="currentAge" value="35" min="15" max="75" />
+
+    <label for="retirementAge">Retirement Age</label>
+    <input type="number" id="retirementAge" value="67" min="50" max="80" />
+
+    <button onclick="calculate()">Calculate</button>
+
+    <!-- Result Output -->
+    <div class="result" id="resultBox" style="display:none;">
+      <div id="finalBalance"></div>
+      <div id="yearsLeft"></div>
+    </div>
+
+    <!-- Year-by-year table -->
+    <table id="resultTable" style="display:none;">
+      <thead>
+        <tr>
+          <th>Year</th>
+          <th>Balance (AUD)</th>
+          <th>Employer Contribution</th>
+          <th>Personal Contribution</th>
+          <th>Gross Return</th>
+          <th>Fees</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+
+    <p class="note">
+      <strong>Disclaimer:</strong> This is a simplified projection and does not account for tax on contributions or earnings, contribution caps, or changes to legislation. Use it for indicative planning only. For personal advice, please consult a licensed financial adviser.
+    </p>
+
+    <h2>Useful Resources</h2>
+    <ul>
+      <li><a href="https://www.ato.gov.au/Individuals/Super/" target="_blank" rel="noopener">Australian Tax Office - Superannuation</a></li>
+      <li><a href="https://www.moneysmart.gov.au/superannuation-and-retirement" target="_blank" rel="noopener">MoneySmart - Superannuation</a></li>
+      <li><a href="https://www.superguide.com.au/" target="_blank" rel="noopener">SuperGuide Australia</a></li>
+    </ul>
+  </div>
+
+  <script>
+    function formatCurrency(num) {
+      return new Intl.NumberFormat('en-AU', { style: 'currency', currency: 'AUD', maximumFractionDigits: 0 }).format(num);
+    }
+
+    function calculate() {
+      const currentBalance = parseFloat(document.getElementById('currentBalance').value) || 0;
+      let annualSalary = parseFloat(document.getElementById('annualSalary').value) || 0;
+      const employerPct = (parseFloat(document.getElementById('employerPct').value) || 0) / 100;
+      const personalContribution = parseFloat(document.getElementById('personalContribution').value) || 0;
+      const annualReturn = (parseFloat(document.getElementById('annualReturn').value) || 0) / 100;
+      const annualFee = (parseFloat(document.getElementById('annualFee').value) || 0) / 100;
+      const salaryGrowth = (parseFloat(document.getElementById('salaryGrowth').value) || 0) / 100;
+      const currentAge = parseInt(document.getElementById('currentAge').value) || 0;
+      const retirementAge = parseInt(document.getElementById('retirementAge').value) || 0;
+
+      const years = retirementAge - currentAge;
+      let balance = currentBalance;
+      const rows = [];
+
+      for (let i = 0; i <= years; i++) {
+        const year = currentAge + i;
+        const empContrib = annualSalary * employerPct;
+        const grossReturn = balance * annualReturn;
+        const fees = balance * annualFee;
+        balance += empContrib + personalContribution + (grossReturn - fees);
+        rows.push({
+          year,
+          balance,
+          empContrib,
+          personalContribution,
+          grossReturn,
+          fees
+        });
+        annualSalary *= (1 + salaryGrowth);
+      }
+
+      // Show results
+      document.getElementById('finalBalance').innerText = "Projected Balance at Retirement: " + formatCurrency(balance);
+      document.getElementById('yearsLeft').innerText = years + " years to retirement";
+      document.getElementById('resultBox').style.display = "block";
+
+      // Build table
+      const tbody = document.querySelector('#resultTable tbody');
+      tbody.innerHTML = "";
+      rows.forEach(r => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${r.year}</td>
+          <td>${formatCurrency(r.balance)}</td>
+          <td>${formatCurrency(r.empContrib)}</td>
+          <td>${formatCurrency(r.personalContribution)}</td>
+          <td>${formatCurrency(r.grossReturn)}</td>
+          <td>${formatCurrency(r.fees)}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+      document.getElementById('resultTable').style.display = "table";
+    }
+  </script>
+</body>
+</html>
